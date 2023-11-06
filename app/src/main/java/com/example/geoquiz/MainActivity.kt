@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ImageButton
+
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: ImageButton
     private lateinit var questionTextView: TextView
     private lateinit var backButton: ImageButton
+    private lateinit var correctanswers: TextView
+    private var checktoast: Int = 0
     private val questionBank = listOf(
         Question(R.string.question_australia, true),
         Question(R.string.question_oceans, true),
@@ -33,73 +36,110 @@ class MainActivity : AppCompatActivity() {
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
         backButton = findViewById(R.id.back_button)
+        correctanswers = findViewById(R.id.correctanswers)
         questionTextView = findViewById(R.id.question_text_view)
         trueButton.setOnClickListener { view: View ->
             checkAnswer(true)
+            trueButton.isEnabled = false
+            falseButton.isEnabled = false
         }
         falseButton.setOnClickListener { view: View ->
             checkAnswer(false)
+            trueButton.isEnabled = false
+            falseButton.isEnabled = false
         }
         nextButton.setOnClickListener {
             nextQuest()
+            trueButton.isEnabled = true
+            falseButton.isEnabled = true
         }
-        backButton.setOnClickListener{
+        backButton.setOnClickListener {
             backQuest()
+            trueButton.isEnabled = false
+            falseButton.isEnabled = false
         }
-        questionTextView.setOnClickListener{
+        questionTextView.setOnClickListener {
             nextQuest()
         }
         updateQuestion()
+
     }
+
     override fun onStart() {
         super.onStart()
-        Log.d(TAG,
-            "onStart() called")
+        Log.d(
+            TAG,
+            "onStart() called"
+        )
     }
+
     override fun onResume() {
         super.onResume()
-        Log.d(TAG,
-            "onResume() called")
+        Log.d(
+            TAG,
+            "onResume() called"
+        )
     }
+
     override fun onPause() {
         super.onPause()
-        Log.d(TAG,
-            "onPause() called")
+        Log.d(
+            TAG,
+            "onPause() called"
+        )
     }
+
     override fun onStop() {
         super.onStop()
-        Log.d(TAG,
-            "onStop() called")
+        Log.d(
+            TAG,
+            "onStop() called"
+        )
     }
+
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG,
-            "onDestroy() called")
+        Log.d(
+            TAG,
+            "onDestroy() called"
+        )
     }
+
     fun updateQuestion() {
         val questionTextResId = questionBank[currentIndex].textResId
         questionTextView.setText(questionTextResId)
     }
-    private fun checkAnswer(userAnswer:
-                            Boolean) {
+
+    fun checkAnswer(
+        userAnswer:
+        Boolean
+    ) {
+
         val correctAnswer =
             questionBank[currentIndex].answer
         val messageResId = if (userAnswer ==
-            correctAnswer) {
+            correctAnswer
+        ) {
             R.string.correct_toast
+            checktoast + 1
         } else {
             R.string.incorrect_toast
         }
-        Toast.makeText(this, messageResId,
-            Toast.LENGTH_SHORT)
+        Toast.makeText(
+            this, messageResId,
+            Toast.LENGTH_SHORT
+        )
             .show()
     }
-   fun nextQuest() {
-       currentIndex = (currentIndex + 1) % questionBank.size
-       updateQuestion()
-   }
-    fun backQuest()  {
-        currentIndex = when (currentIndex){
+
+
+    fun nextQuest() {
+        currentIndex = (currentIndex + 1) % questionBank.size
+        updateQuestion()
+    }
+
+    fun backQuest() {
+        currentIndex = when (currentIndex) {
             in 1..5 -> (currentIndex - 1) % questionBank.size
             else -> (currentIndex + 0) % questionBank.size
         }
