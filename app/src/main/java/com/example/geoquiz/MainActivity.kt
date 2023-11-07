@@ -17,8 +17,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: ImageButton
     private lateinit var questionTextView: TextView
     private lateinit var backButton: ImageButton
-    private lateinit var correctanswers: TextView
-    private var checktoast: Int = 0
     private val questionBank = listOf(
         Question(R.string.question_australia, true),
         Question(R.string.question_oceans, true),
@@ -36,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
         backButton = findViewById(R.id.back_button)
-        correctanswers = findViewById(R.id.correctanswers)
         questionTextView = findViewById(R.id.question_text_view)
         trueButton.setOnClickListener { view: View ->
             checkAnswer(true)
@@ -121,7 +118,6 @@ class MainActivity : AppCompatActivity() {
             correctAnswer
         ) {
             R.string.correct_toast
-            checktoast + 1
         } else {
             R.string.incorrect_toast
         }
