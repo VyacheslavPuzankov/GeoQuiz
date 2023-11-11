@@ -8,8 +8,12 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ImageButton
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.get
 
 private const val TAG = "MainActivity"
+private const val KEY_INDEX = "index"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
@@ -17,19 +21,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: ImageButton
     private lateinit var questionTextView: TextView
     private lateinit var backButton: ImageButton
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-    private var currentIndex = 0
+    private val quizViewModel: QuizViewModel by lazy {
+        ViewModelProviders.of(this).get(QuizViewModel::class.java)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(Bundle?) called")
         setContentView(R.layout.activity_main)
+        val currentIndex =
+            savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
+        quizViewModel.currentIndex = currentIndex
+        // три строчки сверху позволяет сохранить модель активити и передать ее при повороте экрана
         trueButton = findViewById(R.id.true_button)
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
@@ -80,11 +82,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        Log.d(
+        val d = Log.d(
             TAG,
             "onPause() called"
         )
     }
+        override fun onSaveInstanceState(savedInstanceState: Bundle)
+        {
+            super.onSaveInstanceState(savedInstanceState)
+            Log.i(TAG, "onSaveInstanceState")
+            savedInstanceState.putInt(KEY_INDEX, quizViewModel.currentIndex)
+        }
 
     override fun onStop() {
         super.onStop()
@@ -103,7 +111,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
     }
 
@@ -113,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     ) {
 
         val correctAnswer =
-            questionBank[currentIndex].answer
+            quizViewModel.currentQuestionAnswer
         val messageResId = if (userAnswer ==
             correctAnswer
         ) {
@@ -130,15 +138,12 @@ class MainActivity : AppCompatActivity() {
 
 
     fun nextQuest() {
-        currentIndex = (currentIndex + 1) % questionBank.size
+        quizViewModel.moveToNext()
         updateQuestion()
     }
 
     fun backQuest() {
-        currentIndex = when (currentIndex) {
-            in 1..5 -> (currentIndex - 1) % questionBank.size
-            else -> (currentIndex + 0) % questionBank.size
-        }
+        quizViewModel.backToNext()
         updateQuestion()
     }
 }
