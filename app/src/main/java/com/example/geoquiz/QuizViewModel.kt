@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 
 private const val TAG = "QuizViewModel"
 class QuizViewModel : ViewModel(){
+    val isCheater = false
     var currentIndex = 0
     private val questionBank = listOf(
         Question(R.string.question_australia, true),

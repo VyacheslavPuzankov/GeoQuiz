@@ -13,4 +13,8 @@
     <string name="correct_toast">Правильно</string>
     <string name="incorrect_toast">Неправильно</string>
     <string name="back_button">Назад</string>
+    <string name="warning_text">Ты уверен что хочешь это сделать?</string>
+    <string name="show_answer_button">Показать ответ</string>
+    <string name="cheat_button">Ты жулик!?</string>
+    <string name="judgment_toast">Обманывать - это плохо</string>
 </resources>
